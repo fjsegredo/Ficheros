@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Editar Perfil{% endblock %}
+
+
+{% block content %}
+{% if cambio %}
+<h4>{{ cambio }}</h4>
+{% endif %}
+
+<form method="POST" action="{% url 'perfil' %}">
+  {% csrf_token %}
+  {{ usuario_form.as_p }}
+  <button type="submit" name="guardar_usuario">Guardar cambios de usuario</button>
+</form>
+
+<form method="POST" action="{% url 'perfil' %}">
+  {% csrf_token %}
+  {{ perfil_form.as_p }}
+  <button type="submit" name="guardar_perfil">Guardar cambios de perfil</button>
+</form>
+{% if avatar_exists and avatar.image %}
+<img src="{{ avatar.image.url }}" alt="Avatar" style="max-width: 300px; max-height: 300px;">
+{% endif %}
+<form method="POST" action="{% url 'perfil' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ avatar_form.as_p }}
+  <button type="submit" name="subir_avatar">Subir avatar</button>
+
+{% if not avatar_exists %}
+<p>No se ha subido ningún avatar. Está utilizando el avatar predeterminado.</p>
+{% endif %}
+
+
+
+
+</form>
+{% endblock %}

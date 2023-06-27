@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Contribuyentes{% endblock %}
+
+{% block content %}
+  <div class="usuarios-grid">
+    {% for usuario in usuarios %}
+      <div class="usuario-card">
+        <h3><a href="{% url 'ver_perfil' username=usuario.username %}">{{ usuario.username }}</a></h3>
+        <p>Nombre: {% if usuario.first_name %}{{ usuario.first_name }}{% else %}Desconocido{% endif %}</p>
+        <p>Apellido: {% if usuario.last_name %}{{ usuario.last_name }}{% else %}Desconocido{% endif %}</p>
+        <p>Institución: {% if usuario.perfil and usuario.perfil.institucion %}{{usuario.perfil.institucion}}{% else %}Desconocida{% endif %}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <style>
+    .usuarios-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 20px;
+    }
+
+    .usuario-card {
+      border: 2px solid #3d064d;
+      padding: 20px;
+      
+    }
+  </style>
+{% endblock %}
+
+

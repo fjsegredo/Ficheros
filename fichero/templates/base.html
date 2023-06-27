@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <style>
+    body{
+        background-color: #030303;
+    }
+
+    header {
+      background-color: #3d064d;
+      padding: 10px;
+      color: #ffffff;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    footer {
+      background-color: #3d064d;
+      padding: 10px;
+      color: #ffffff;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    nav {
+      background-color: #666;
+      padding: 10px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav ul li {
+      display: inline-block;
+    }
+
+    nav ul li a {
+      display: block;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 20px;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: large;
+    }
+
+    nav ul li a:hover {
+      background-color: #3c064d86;
+    }
+    .container {
+      border: 4px solid #3d064d;
+      margin: 20px;
+      padding: 20px;
+      text-align: justify;
+    }
+
+    .container a:visited {
+      color: #7f4390
+    }
+    
+    a.titulo:visited {
+        color: #ffffff
+    }
+
+    .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+  .sesion {
+  display: flex;
+  align-items: center;
+}
+
+.sesion a:visited {
+        color: #ffffff
+    }
+
+
+
+
+
+.bienvenida {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    padding: 0;
+  }
+.bienvenida h3 {
+    margin-bottom: 0;
+  }
+  
+  .bienvenida h3:last-child {
+    margin-bottom: 0;
+  }
+
+
+  .bienvenida a:visited {
+        color: #ffffff
+    }  
+
+
+.avatarbienvenida {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 15px;
+  }
+
+  .avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header">
+      <h1><a href="/" class="titulo">Ficheros - una base de datos bibliográfica</a></h1>
+      <div class="sesion">
+        {% if not user.is_authenticated %}
+          <h2><a class="btn btn-primary" href={% url 'login' %}>Iniciar sesión</a></h2>
+        {% else %}
+        <div class="avatarbienvenida">
+          {% if avatar != None %}  
+          <img src="{{ user.avatar.mostrar }}" alt="Avatar" class="avatar-img">
+          {% endif %}
+        </div> 
+            <div class="bienvenida">
+          <h3>Bienvenido(a), {{ user.username }}!</h3>
+            <h3><a href="{% url 'perfil' %}">Editar perfil</a> // <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a></h3>
+          </div>
+        {% endif %}      
+      </div>
+    </div>
+  </header>
+  
+
+  <nav>
+    <ul>
+      {% if not user.is_authenticated %}
+      <li><a href="/registro/">Registro</a></li>
+      <li><a href="/about/">¿Quiénes somos?</a></li>
+      {% else %}
+      <li><a href="#">Fichar</a></li>
+      <li><a href="#">Buscar</a></li>
+      <li><a href="{% url 'contribuyentes' %}">Contribuyentes</a></li>
+      <li><a href="/about/">¿Quiénes somos?</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <div class="container", style="color: #ffffff">
+    {% block content %}{% endblock %}
+  </div>
+  <footer>
+    Ficheros - una base de datos bibliográfica. Entrega final - Federico Segredo Simonetti: <a href="mailto:fjsegredosimonetti@gmail.com" style="color: #767676"; >fjsegredosimonetti@gmail.com</a>
+  </footer>
+</body>
+</html>

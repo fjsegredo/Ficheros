@@ -1,0 +1,7 @@
+**/migrations/
+
+**/cache/
+
+# Ignorar todos los archivos de imagen, excepto defaultavatar.jpg
+/media/**
+!defaultavatar.jpg

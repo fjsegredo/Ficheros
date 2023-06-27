@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Registro de usuarios{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="{% url 'registro' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrarse</button>
+  </form>
+  
+
+{% endblock %}
