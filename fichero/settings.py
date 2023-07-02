@@ -24,6 +24,20 @@ SECRET_KEY = 'django-insecure-gsev9j7#kv81)re@bl7s#6%b_do-t2hb&9v60uc(d%-c#$6is2
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',  # Puedes ajustar el nivel según tus necesidades (DEBUG, INFO, WARNING, ERROR, etc.)
+    },
+}
+
 
 ALLOWED_HOSTS = []
 
@@ -32,6 +46,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'Usuarios',
+    'Fichas',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,7 +154,10 @@ if not os.path.exists(avatars_carpeta):
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

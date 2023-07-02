@@ -131,34 +131,41 @@
           <h2><a class="btn btn-primary" href={% url 'login' %}>Iniciar sesión</a></h2>
         {% else %}
         <div class="avatarbienvenida">
-          {% if avatar != None %}  
+          {% if avatar %}
           <img src="{{ user.avatar.mostrar }}" alt="Avatar" class="avatar-img">
-          {% endif %}
+        {% endif %}
+        
         </div> 
             <div class="bienvenida">
           <h3>Bienvenido(a), {{ user.username }}!</h3>
-            <h3><a href="{% url 'perfil' %}">Editar perfil</a> // <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a></h3>
+            <h3>  {% if user.is_superuser %}<a href="{% url 'admin:index' %}">Panel de administración</a>{% endif %} // <a href="{% url 'perfil' %}">Editar perfil</a> // <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a></h3>
           </div>
         {% endif %}      
       </div>
     </div>
   </header>
-  
 
   <nav>
     <ul>
       {% if not user.is_authenticated %}
-      <li><a href="/registro/">Registro</a></li>
-      <li><a href="/about/">¿Quiénes somos?</a></li>
-      {% else %}
-      <li><a href="#">Fichar</a></li>
-      <li><a href="#">Buscar</a></li>
+      <li><a href="{% url 'registro' %}">Registro</a></li>
+      <li><a href="{% url 'libros' %}">Libros</a></li>
+      <li><a href="{% url 'articulos' %}">Artículos</a></li>
+      <li><a href="{% url 'capitulos' %}">Capitulos</a></li>
       <li><a href="{% url 'contribuyentes' %}">Contribuyentes</a></li>
-      <li><a href="/about/">¿Quiénes somos?</a></li>
+      <li><a href="{% url 'about' %}">¿Quiénes somos?</a></li>
+      {% else %}
+      <li><a href="{% url 'fichar' %}">¿Cómo fichar?</a></li>
+      <li><a href="{% url 'libros' %}">Libros</a></li>
+      <li><a href="{% url 'articulos' %}">Artículos</a></li>
+      <li><a href="{% url 'capitulos' %}">Capitulos</a></li>
+      <li><a href="{% url 'buscar_libros' %}">Buscar en L/C/A</a></li>
+      <li><a href="{% url 'buscar_fichas' %}">Buscar fichas</a></li>
+      <li><a href="{% url 'contribuyentes' %}">Contribuyentes</a></li>
+      <li><a href="{% url 'about' %}">¿Quiénes somos?</a></li>
       {% endif %}
     </ul>
   </nav>
-
   <div class="container", style="color: #ffffff">
     {% block content %}{% endblock %}
   </div>

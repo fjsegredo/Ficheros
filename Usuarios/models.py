@@ -17,6 +17,7 @@ class Avatar(models.Model):
     def __str__(self):
         return self.user.username
     
+    @property
     def mostrar(self):
         if self.image:
             return self.image.url
@@ -34,7 +35,11 @@ class Perfil(models.Model):
     residencia = models.CharField(max_length=100, null=True)
     institucion = models.CharField(max_length=100, null=True)
     cargo = models.CharField(max_length=100, null=True)
+    pagina_web = models.URLField(null=True)
 
+    class Meta:
+        verbose_name_plural = "Perfiles"
+        
     def __str__(self):
         return (self.user.username)
     

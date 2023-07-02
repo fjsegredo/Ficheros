@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - una base de datos bibliográfica{% endblock %}
+
+{% block content %}
+<h2>Para fichar un libro, artículo o capítulo, debes entrar a su página, ya sea a través del buscador o a través de la lista.</h2>
+<h2>El primer paso es consultar si el libro, artículo o capítulo que deseas fichar está en la base de datos.</h2>
+  <h2>Puedes buscarlo en <a href="{% url 'buscar_libros' %}">nuestro buscador</a> o en nuestras listas:</h2>
+  <ul>
+    <h3><li><a href="{% url 'libros' %}">Libros</a></li></h3>
+    <h3><li><a href="{% url 'articulos' %}">Artículos</a></li></h3>
+    <h3><li><a href="{% url 'capitulos' %}">Capítulos</a></li></h3>
+  </ul>
+  <h2>Si no lo encuentras, según el tipo de publicación:</h2>
+  <ul>
+    <h3><li><a href="{% url 'agregar_libro' %}">Libro</a></li></h3>
+    <h3><li><a href="{% url 'agregar_articulo' %}">Artículo de revista</a></li></h3>
+    <h3><li><a href="{% url 'agregar_capitulo' %}">Capítulo</a></li></h3>
+  </ul>
+
+{% endblock %}

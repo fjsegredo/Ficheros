@@ -2,18 +2,13 @@
 
 {% block title %}Ficheros - Editar Perfil{% endblock %}
 
-
 {% block content %}
-{% if cambio %}
-<h4>{{ cambio }}</h4>
-{% endif %}
-
 <form method="POST" action="{% url 'perfil' %}">
   {% csrf_token %}
   {{ usuario_form.as_p }}
   <button type="submit" name="guardar_usuario">Guardar cambios de usuario</button>
 </form>
-
+<p>Puedes cambiar tu contraseña <a href="{% url 'cambiar_pass' %}"> aquí:</a></p>
 <form method="POST" action="{% url 'perfil' %}">
   {% csrf_token %}
   {{ perfil_form.as_p }}
@@ -28,11 +23,73 @@
   <button type="submit" name="subir_avatar">Subir avatar</button>
 
 {% if not avatar_exists %}
-<p>No se ha subido ningún avatar. Está utilizando el avatar predeterminado.</p>
+<p>No se ha subido ningún avatar. Estás utilizando el avatar predeterminado.</p>
 {% endif %}
 
+<div class="bottom-card-container">
+  <h3>Tus contribuciones:</h3>
+  {% if request.user.libro_set.all %}
+  {% for libro in request.user.libro_set.all %}
+  <div class="bottom-card">
+    <ul>
+      <li><a href='{% url 'ver_libro' id=libro.id %}'>{{ libro|title }}</a></li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
 
-
+<div class="bottom-card-container">
+  <h3>Tus fichas:</h3>
+  {% if request.user.ficha_set.all %}
+  {% for ficha in request.user.ficha_set.all %}
+  <div class="bottom-card">
+    <ul>
+      <li>{{ ficha|title }}</li>
+      {% if ficha.imagen %}<li><img src="{{ ficha.imagen.url }}" alt="imagen de ficha" style="max-width: 300px; max-height: 300px;"></li>{% endif %}
+      <li>{{ ficha.texto }}</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
 
 </form>
+
+<style>
+a:link,
+a:visited {
+    color: white;
+    text-decoration: underline;
+}
+
+a:hover,
+a:active {
+    text-decoration: underline;
+    color: white;
+}
+
+.bottom-card-container {
+  margin-top: 20px;
+  color: white; /* Ajusta el valor según sea necesario */
+}
+
+.bottom-card {
+  border: 3px solid #3d064d;
+  background-color: #3d064d;
+  padding: 20px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.bottom-card a {
+  color: white;
+  text-decoration: underline;
+}
+
+.bottom-card a:visited {
+  color: white;
+}
+</style>
 {% endblock %}
+

@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
@@ -7,27 +9,37 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from Usuarios.models import Avatar, Perfil
-from Usuarios.forms import PerfilFormulario, AvatarFormulario, EditarUsuario
+from Usuarios.forms import PerfilFormulario, AvatarFormulario, EditarUsuario, UserSearchForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 class RegistroVista(FormView):
     template_name = 'Usuarios\\registro.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('perfil')
 
     def form_valid(self, form):
         user = form.save()
-        avatar = Avatar.objects.create(user=user)
-        avatar.image = None
-        avatar.save()
-        perfil = Perfil.objects.create(user=user)
-        perfil.fecha_nacimiento = None
-        perfil.pais_nacimiento = None
-        perfil.residencia = None
-        perfil.institucion = None
-        perfil.cargo = None
+
+        # Verificar si ya existe un Avatar para el usuario
+        avatar = Avatar.objects.filter(user=user).first()
+        if not avatar:
+            avatar = Avatar.objects.create(user=user)
+            avatar.image = None
+            avatar.save()
+
+        # Verificar si ya existe un Perfil para el usuario
+        perfil = Perfil.objects.filter(user=user).first()
+        if not perfil:
+            perfil = Perfil.objects.create(user=user)
+            perfil.fecha_nacimiento = None
+            perfil.pais_nacimiento = None
+            perfil.residencia = None
+            perfil.institucion = None
+            perfil.cargo = None
+
         login(self.request, user)
-        return super().form_valid(form)
+        return redirect(self.success_url)
     
 
 class LoginVista(LoginView):
@@ -51,7 +63,6 @@ def LogoutVista(request):
 
 @login_required
 def EditarPerfil(request):
-    cambio = ''
     if Perfil.objects.filter(user=request.user).exists():
         perfil = request.user.perfil
     else:
@@ -76,8 +87,7 @@ def EditarPerfil(request):
                     usuario.last_name = usuario_form.cleaned_data['last_name']
 
                 usuario.save()
-                cambio = 'Se han guardado correctamente los cambios a los datos del usuario.'
-                return redirect(reverse_lazy('perfil')) 
+                return redirect(reverse_lazy('perfil'))
 
         elif 'guardar_perfil' in request.POST:
             perfil_form = PerfilFormulario(request.POST, instance=request.user.perfil)
@@ -97,7 +107,6 @@ def EditarPerfil(request):
                     perfil.cargo = perfil_form.cleaned_data['cargo']
 
                 perfil.save()
-                cambio = 'Se han guardado correctamente los cambios al perfil del usuario.'
                 return redirect(reverse_lazy('perfil'))
 
         elif 'subir_avatar' in request.POST:
@@ -110,7 +119,6 @@ def EditarPerfil(request):
                     avatar.image = avatar_form.cleaned_data['image']
 
                 avatar.save()
-                cambio = 'Se han guardado correctamente el nuevo ávatar.'
                 return redirect(reverse_lazy('perfil'))
 
         return redirect(reverse_lazy('perfil')) 
@@ -122,11 +130,12 @@ def EditarPerfil(request):
             'last_name': request.user.last_name
         })
         perfil_form = PerfilFormulario(initial={
-                'fecha_nacimiento': perfil.fecha_nacimiento,
-                'pais_nacimiento': perfil.pais_nacimiento,
-                'residencia': perfil.residencia,
-                'institucion': perfil.institucion,
-                'cargo': perfil.cargo
+                'fecha_nacimiento': request.user.perfil.fecha_nacimiento,
+                'pais_nacimiento': request.user.perfil.pais_nacimiento,
+                'residencia': request.user.perfil.residencia,
+                'institucion': request.user.perfil.institucion,
+                'cargo': request.user.perfil.cargo,
+                'pagina_web': request.user.perfil.pagina_web,
         })
         avatar_form = AvatarFormulario()
 
@@ -135,17 +144,11 @@ def EditarPerfil(request):
         'usuario_form': usuario_form,
         'perfil_form': perfil_form,
         'avatar_form': avatar_form,
-        'cambio': cambio,
     }
 
     return render(request, "Usuarios\\perfil.html", context)
 
 @login_required
-def contribuyentes(request):
-    usuarios = User.objects.all()
-    context = {'usuarios': usuarios}
-    return render(request, 'Usuarios\\contribuyentes.html', context)
-
 def ver_perfil(request, username):
     user = request.user
     if user.username == username:
@@ -158,4 +161,56 @@ def ver_perfil(request, username):
             return render(request, 'Usuarios\\perfil_no_encontrado.html')
 
 
-# def cambio_contraseña
+
+# import logging
+# logger = logging.getLogger(__name__)
+
+@login_required
+def contribuyentes(request):
+    # logger.info('entrando a la vista de contribuyentes')
+    form = UserSearchForm()
+    users = User.objects.all()
+
+    if request.method == 'POST':
+        form = UserSearchForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            institucion = form.cleaned_data['institucion']
+            
+            if username:
+                users = users.filter(username__iexact=username)
+                # logger.info(f'{users}')
+            
+            if first_name:
+                users = users.filter(first_name__icontains=first_name)
+                # logger.info(f'{users}')
+            
+            if last_name:
+                users = users.filter(last_name__icontains=last_name)
+                # logger.info(f'{users}')
+            
+            if institucion:
+                users = users.filter(perfil__institucion__icontains=institucion)
+                # logger.info(f'{users}')
+
+    context = {'usuarios': users, 'form': form}
+    return render(request, 'Usuarios/contribuyentes.html', context)
+
+
+def cambiar_pass(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, '¡Tu contraseña ha sido cambiada exitosamente!')
+            return redirect(reverse_lazy('perfil'))  # Redirige a la página de éxito
+        else:
+            messages.error(request, 'Corrige los errores del formulario.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    
+    context = {'form': form}
+    return render(request, 'Usuarios\\cambiar_contraseña.html', context)

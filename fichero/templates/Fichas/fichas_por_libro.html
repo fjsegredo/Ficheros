@@ -1,0 +1,52 @@
+<!-- archivo fichas.html -->
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Fichas de {{titulo_libro|title}} de {{autor_libro|title}}{% endblock %}
+
+{% block content %}
+{% if titulo_capitulo %}
+<h1>Capítulo: {{titulo_capitulo}} Autor del capítulo: {{autor_capitulo}}</h1>
+{% endif %}
+<h1>Fichas</h1>
+
+{% if fichas %}
+
+{% for ficha in fichas %}
+<div class="card violet-card">
+  <div class="card-body">
+    <p>
+      <strong>Contribuyente:</strong>
+      <a href="{% url 'ver_perfil' ficha.contribuyente.username %}">{{ ficha.contribuyente }}</a>
+    </p>
+    <p>
+      <strong>Fecha de contribución:</strong> {{ ficha.fecha_contribucion }}
+    </p>
+    {% if ficha.imagen %}
+      <p>
+        <strong>Imagen:</strong>
+        <img src="{{ ficha.imagen.url }}" alt="Imagen de la ficha" height="300">
+      </p>
+    {% endif %}
+    <p>
+      <strong>Texto:</strong> {{ ficha.texto }}
+    </p>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<p> Aún no hay fichas para este libro.</p>
+{% endif %}
+<style>
+.violet-card {
+  background-color: #3d064d;
+}
+
+.violet-card a:link,
+.violet-card a:visited {
+  color: white;
+  text-decoration: underline;
+}
+
+</style>
+{% endblock %}
+

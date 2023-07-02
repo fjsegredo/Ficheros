@@ -11,7 +11,7 @@
         </div>
       {% else %}
         <div class="avatar">
-          <img src="{% static 'media/defaultavatar.jpg' %}" alt="Default Avatar" width="250" height="250">
+          <img src="{% static 'media/defaultavatar.jpg' %}" alt="Default Avatar" width="250" height="auto">
         </div>
       {% endif %}
       <h3>{{ usuario.username }}</h3>
@@ -29,11 +29,44 @@
       </div>
     </div>
   </div>
+
+  {% if usuario.libro_set.all %}
+  <h3>Contribuciones de {{ usuario.username }}</h3>
+  {% for libro in usuario.libro_set.all %}
   <div class="bottom-card-container">
-    <div class="bottom-card">
-      <p>Acá irían los posts de cada usuario.</p>
+  <div class="bottom-card">
+      <ul>
+        {% if libro.es_articulo %}
+          <li><a href='{% url 'ver_articulo' id=libro.id %}'>{{ libro|title }}</a></li>
+        {% elif libro.es_capitulo %}
+          <li><a href='{% url 'ver_capitulo' id=libro.id %}'>{{ libro|title }}</a></li>
+        {% else %}
+          <li><a href='{% url 'ver_libro' id=libro.id %}'>{{ libro|title }}</a></li>
+        {% endif %}
+      </ul>
     </div>
   </div>
+    {% endfor %}
+{% endif %}
+
+  
+  {% if usuario.ficha_set.all %}
+  <h3>Fichas de {{ usuario.username }}:</h3>
+ 
+    {% for ficha in usuario.ficha_set.all %}
+    <div class="bottom-card-container">
+    <div class="bottom-card">
+        <ul>
+          <li>{{ ficha|title }}</li>
+          {% if ficha.imagen %}
+          <li><img src="{{ ficha.imagen.url }}" alt="imagen de ficha" style="width: 400px; height: auto"></li>
+        {% endif %}        
+          <li>{{ ficha.texto }}</li>
+        </ul>
+      </div>
+  </div>
+      {% endfor %}
+  {% endif %}
 
   <style>
     .profile {
@@ -44,7 +77,8 @@
     }
 
     .left-card {
-      border: 3px solid #3d064d;
+      border: 3px solid #61386e;
+      background-color: #3d064d;
       padding: 20px;
       width: 250px;
       align-self: flex-start;
@@ -56,7 +90,8 @@
     }
 
     .right-card {
-      border: 3px solid #3d064d;
+      border: 3px solid #61386e;
+      background-color: #3d064d;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -79,10 +114,16 @@
     }
 
     .bottom-card {
-      border: 3px solid #3d064d;
+      color: white;
+      border: 3px solid #61386e;
+      background-color: #3d064d;
       padding: 20px;
     }
+    .bottom-card a,
+.bottom-card a:visited {
+  color: white;
+}
+
   </style>
 {% endblock %}
-
 

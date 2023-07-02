@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Libros{% endblock %}
+
+{% block content %}
+  <h1 style="text-align: center;">Lista de libros:</h1>
+  {% if not libros %}
+    <h3 style="text-align: center;">No hay libros que coincidan con tu búsqueda (o bien, no hay ningún libro en la base de datos). Agrégalo: <a href="{% url 'agregar_libro' %}" style="color: white; text-decoration: underline;">Agregar libro</a></h3>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      {{ formulario.as_p }}
+      <button type="submit">Buscar</button>
+    </form>
+    <h3 style="text-align: center;">Si el libro que buscas no se encuentra en esta lista, asegúrate haciendo búsquedas con otros parámetros. Una vez te asegures de que el libro no está en la base, agrégalo: </h3>
+    <h3 style="text-align: center;"><a href="{% url 'agregar_libro' %}" style="color: white; text-decoration: underline;">Agregar libro</a></h3>
+    <div class="libros-grid">
+      {% for libro in libros %}
+        <div class="libro-card">
+          <h3><a href="{% url 'ver_libro' id=libro.id %}">{{ libro|title }}</a></h3>
+          <p></p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <style>
+    .libros-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 20px;
+    }
+
+    .libro-card {
+      border: 2px solid #3d064d;
+      background-color: #3d064d;
+      padding: 20px;
+    }
+
+    .libro-card a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .libro-card a:visited {
+      color: white;
+    }
+  </style>
+{% endblock %}

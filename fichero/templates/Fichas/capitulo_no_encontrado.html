@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Capítulo no encontrado</h2>
+  <p>No deberías haber llegado a esta página, pero si por algún motivo lo hiciste, se debe a que el capítulo que estás buscando no existe en la base de datos. Puedes agregar uno <a href="{% url 'agregar_capitulo' %}">aquí:</a></p>
+{% endblock %}

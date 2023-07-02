@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Capítulos{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center;">Lista de capítulos:</h1>
+{% if not capitulos %}
+  <h3 style="text-align: center;">No hay capítulos que coincidan con tu búsqueda (o bien, no hay ningún capítulo en la base de datos). Agrégalo: <a href="{% url 'agregar_capitulo' %}" class="link-titulo">Agregar capítulo</a></h3>
+{% else %}
+  <form method="post">
+    {% csrf_token %}
+    {{ formulario.as_p }}
+    <button type="submit">Buscar</button>
+  </form>
+  <h3 style="text-align: center;">Si el capítulo que buscas no se encuentra en esta lista, asegúrate haciendo búsquedas con otros parámetros. Una vez te asegures de que el capítulo no está en la base, agrégalo:</h3>
+<h3 style="text-align: center;"><a href="{% url 'agregar_capitulo' %}" style="color: white; text-decoration: underline;">Agregar capítulo</a></h3>
+  <div class="libros-grid">
+    {% for capitulo in capitulos %}
+      <div class="libro-card">
+        <h3><a href="{% url 'ver_capitulo' id=capitulo.id %}">{{ capitulo|title }}</a></h3>
+        <p></p>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<style>
+  .libros-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+  }
+
+  .libro-card {
+    border: 2px solid #3d064d;
+    background-color: #3d064d;
+    padding: 20px;
+  }
+
+  .libro-card a {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .libro-card a:visited {
+    color: white;
+  }
+
+  .link-titulo {
+    color: white;
+  }
+
+  .link-titulo a:visited {
+    color: white;
+  }
+</style>
+{% endblock %}

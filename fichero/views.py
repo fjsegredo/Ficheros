@@ -5,3 +5,6 @@ def inicio(request):
 
 def about(request):
     return render(request, "about.html")
+
+def fichar(request):
+    return render(request, "Fichas\\fichar.html")

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Ficheros - Buscar Fichas{% endblock %}
+
+{% block content %}
+  <h1 style="text-align: center;">Buscador de fichas:</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Buscar</button>
+  </form>
+  {% if fichas %}
+    <div class="fichas-list">
+      {% for ficha in fichas %}
+        <div class="ficha-card">
+            <h2>Libro, artículo o capítulo: {{ ficha.libro }}</h2>
+            <h2>Contribuyente: {{ ficha.contribuyente|default:'El usuario no existe más' }}</h2>
+            {% if ficha.imagen %}
+                <h3>Imagen de la ficha: <img src="{{ ficha.imagen.url }}" alt="Imagen" height="300"></h3>
+            {% endif %}
+            <h3>{{ ficha.texto }}</h3>
+            <h4>Fecha: {{ ficha.fecha_contribucion }}</h4>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <h3 style="text-align: center;">No hay fichas que coincidan con tu búsqueda.</h3>
+  {% endif %}
+
+  <style>
+    .fichas-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ficha-card {
+      border: 2px solid #3d064d;
+      background-color: #3d064d;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .ficha-card h2,
+    .ficha-card h3,
+    .ficha-card h4 {
+      color: white;
+    }
+
+    .ficha-card a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .ficha-card a:visited {
+      color: white;
+    }
+
+    .link-titulo {
+      color: white;
+    }
+
+    .link-titulo a:visited {
+      color: white;
+    }
+  </style>
+{% endblock %}
+

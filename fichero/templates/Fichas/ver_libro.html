@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="main-container">
+    <div class="profile-container">
+      <div class="profile">
+        <div class="libro-card">
+          <h1>{{libro|title}}</h1>
+          <h3>Autor: {% if libro.autor %}{{ libro.autor|title }}{% else %}Desconocido{% endif %}</h3>
+          <h3>Publicación: {% if libro.fecha_publicacion %}{{libro.fecha_publicacion}}{% else %}Desconocida{% endif %}</h3>
+          <h3>Etiqueta: {% if libro.etiqueta %}{{libro.etiqueta|title}}{% else %}No hay etiqueta{% endif %}</h3>
+          <h3>País o ciudad: {% if libro.ciudad_pais %}{{libro.ciudad_pais|title}}{% else %}Desconocida{% endif %}</h3>
+          <h3>Editorial: {% if libro.editorial %}{{libro.editorial|title}}{% else %}Desconocida{% endif %}</h3>
+          <h3>Agregado por <a href="{% url 'ver_perfil' username=libro.contribuyente %}">{{ libro.contribuyente }}</a> el {{ libro.fecha_contribucion }}</h3>
+          <h3>Id: {{libro.id}}</h3>          
+          <p></p>
+        </div>
+      </div>
+      <div class="buttons-container">
+        <div class="medium-card">
+          <h3><a href="{% url 'crear_ficha' id=libro.id %}">Crear ficha de libros</a></h3>
+        </div>
+        <div class="medium-card">
+          <h3><a href="{% url 'fichas_por_libro' libro_id=libro.id %}">Fichas por libro</a></h3>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .main-container {
+      background-color: #3d064d;
+      padding: 20px;
+    }
+  
+    .profile-container {
+      display: flex;
+    }
+  
+    .profile {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  
+    .libro-card {
+      padding: 20px;
+    }
+    .libro-card a {
+      color: white; /* Color del enlace */
+    }
+  
+    .libro-card a:visited {
+      color: white; /* Color del enlace visitado */
+    }
+    .buttons-container {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: center;
+    }
+  
+    .medium-card {
+      flex-basis: calc(50% - 10px);
+      border: 3px solid #3d064d;
+      background-color: #666;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  
+    .medium-card a {
+      color: white; /* Color del enlace */
+      text-decoration: none; /* Quita la decoración de subrayado */
+    }
+  
+    .medium-card a:visited {
+      color: white; /* Color del enlace visitado */
+    }
+  </style>
+ {% endblock %}  

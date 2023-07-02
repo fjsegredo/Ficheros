@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Buscar libros, capítulos y artículos:</h1>
+  <h3>Este buscador, a diferencia de los buscadores presentes en las pestañas correspondientes, devuelve entradas de cualquier clase, para una búsqueda general.</h3>
+
+  <form method="GET">
+    {{ form.as_p }}
+    <button type="submit">Buscar</button>
+  </form>
+
+  <h1>
+    {% if resultados %}
+      Resultados de la búsqueda por {{ opcion }}: "{{ busqueda }}"
+    {% endif %}
+  </h1>
+
+  {% if resultados %}
+  <h3>Recuerda que si tu resultado no está aquí, puedes contribuir agregándolo según su tipo de publicación.</h3>
+  <div class="libros-grid">
+    {% for libro in resultados %}
+      {% if libro.es_articulo %}
+        <div class="libro-card">
+          <h3>
+            <a href="{% url 'ver_articulo' id=libro.id %}">
+              {{ libro|title }}
+            </a>
+          </h3>
+          <p></p>
+        </div>
+      {% elif libro.es_capitulo %}
+        <div class="libro-card">
+          <h3>
+            <a href="{% url 'ver_capitulo' id=libro.id %}">
+              {{ libro|title }}
+            </a>
+          </h3>
+          <p></p>
+        </div>
+      {% else %}
+        <div class="libro-card">
+          <h3>
+            <a href="{% url 'ver_libro' id=libro.id %}">
+              {{ libro|title }}
+            </a>
+          </h3>
+          <p></p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>No se encontraron resultados.</p>
+  {% endif %}
+  
+
+
+    </div>
+    <style>
+      .libros-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+      }
+
+      .libro-card {
+        border: 2px solid #3d064d;
+        background-color: #3d064d;
+        padding: 20px;
+      }
+
+      .libro-card a {
+  color: white;
+  text-decoration: underline;
+}
+
+.libro-card a:visited {
+  color: white;
+}
+    </style>
+
+{% endblock %}
+
